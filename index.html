@@ -110,21 +110,22 @@
         const SUPABASE_URL = 'https://gsavdoraatcmlswiqpyk.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdzYXZkb3JhYXRjbWxzd2lxcHlrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3ODA2ODIyMiwiZXhwIjoyMDkzNjQ0MjIyfQ.k21Vb5yUJkeBQxHMIVWJXW86TgfLSRDCDJgTkaIN83Y';
 
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Nama variabel diubah menjadi supabaseClient agar tidak bentrok
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Fungsi Ambil Data Kamar
         async function fetchRooms() {
             const tableBody = document.getElementById('roomsTableBody');
             
             try {
-                const { data: rooms, error } = await supabase
+                const { data: rooms, error } = await supabaseClient
                     .from('rooms')
                     .select('*')
                     .order('number', { ascending: true });
 
                 if (error) throw error;
 
-                tableBody.innerHTML = ''; // Bersihkan tabel
+                tableBody.innerHTML = ''; 
                 
                 if (rooms.length === 0) {
                     tableBody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500">Belum ada data kamar.</td></tr>';
@@ -132,7 +133,6 @@
                 }
 
                 rooms.forEach(room => {
-                    // Logika warna badge status
                     let statusColor = 'bg-gray-700 text-gray-300';
                     if(room.status === 'Available') statusColor = 'bg-teal-900/50 text-teal-400 border border-teal-700';
                     if(room.status === 'Occupied') statusColor = 'bg-red-900/50 text-red-400 border border-red-700';
@@ -174,7 +174,7 @@
             };
 
             try {
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('guests')
                     .insert([newGuest]);
 
@@ -193,7 +193,6 @@
             }
         });
 
-        // Jalankan fetch pertama kali halaman dimuat
         fetchRooms();
     </script>
 </body>
